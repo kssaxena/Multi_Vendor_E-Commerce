@@ -5,8 +5,12 @@ import Button from "./Button";
 import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from "../Utility/Slice/UserInfoSlice";
 import LOGO from "../assets/Logo.png";
+import { useEffect } from "react";
+import { FetchData } from "../Utility/FetchFromApi";
+import { useState } from "react";
 
 const Header = () => {
+  const [stats, setStats] = useState(null);
   const user = useSelector((store) => store.UserInfo.user);
   // console.log(user);
   const dispatch = useDispatch();
@@ -26,6 +30,15 @@ const Header = () => {
     Navigate(`/admin-register`);
   };
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      const res = await FetchData("analytics/visitors", "get");
+      setStats(res.data.data);
+    };
+
+    fetchStats();
+  }, []);
+
   return (
     <header className="flex justify-between items-center px-5">
       {/* Logo */}
@@ -33,6 +46,22 @@ const Header = () => {
         <Link to={"/home"}>
           <img src={LOGO} alt="Logo" className="w-20" />
         </Link>
+      </div>
+      <div className="flex gap-2">
+        <div className="bg-white p-2 shadow rounded">
+          <h3>Total Visits</h3>
+          <p>{stats?.totalVisits}</p>
+        </div>
+
+        <div className="bg-white p-2 shadow rounded">
+          <h3>Today's Visitors</h3>
+          <p>{stats?.todayVisits}</p>
+        </div>
+
+        <div className="bg-white p-2 shadow rounded">
+          <h3>Unique Users</h3>
+          <p>{stats?.uniqueVisitors}</p>
+        </div>
       </div>
       <div className="flex items-center gap-5 px-4 py-5">
         {user.length > 0 ? (
