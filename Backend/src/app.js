@@ -41,6 +41,7 @@ app.use(express.text({ type: "text/*", limit: "32kb" })); // For plain text form
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
+app.use(trackVisitor);
 
 //print function to ensure every step is executed
 app.use((req, res, next) => {
@@ -78,6 +79,10 @@ import promotionRouter from "./routes/promotion.routes.js";
 import driverRouter from "./routes/delivery-partner.routes.js";
 import productPolicyRouter from "./routes/productPolicy.route.js";
 
+//analytics counter
+import { trackVisitor } from "./middlewares/trackVisitor.middleware.js";
+import analyticsRoutes from "./routes/analytics.routes.js";
+
 //vendor routes
 app.use("/api/v1/vendor", vendorRouter);
 
@@ -110,5 +115,8 @@ app.use("/api/v1/driver", driverRouter);
 
 // Product Policy routes
 app.use("/api/v1/policies", productPolicyRouter);
+
+//analytics counter
+app.use("/api/v1/analytics", analyticsRoutes);
 
 export { app };
